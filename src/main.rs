@@ -10,7 +10,6 @@ struct Args {
     #[arg(long)]
     level: Option<String>,
 }
-
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
@@ -22,14 +21,16 @@ fn main() -> anyhow::Result<()> {
     for line in reader.lines() {
         let line = line?;
 
-        if let Some(ref level) = args.level {
-            if line.contains(level) {
-                println!("{}", line);
-                count += 1;
-            }
-        } else {
-            println!("{}", line);
+        let parts: Vec<&str> = line.split_whitespace().collect();
+
+        if parts.len() < 3 {
+            continue;
         }
+
+        let level = parts[0];
+        let _timestamp = parts[1];
+        let message = parts[2..].join(" ");
+
     }
 
     println!("Total matches: {}", count);
