@@ -9,7 +9,16 @@ struct Args {
 
     #[arg(long)]
     level: Option<String>,
+
+    #[arg(long)]
+    keyword: Option<String>,
 }
+
+struct LogEntry {
+    level: String,
+    message: String,
+}
+
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
@@ -30,6 +39,11 @@ fn main() -> anyhow::Result<()> {
         let level = parts[0];
         let _timestamp = parts[1];
         let message = parts[2..].join(" ");
+
+        let entry = LogEntry {
+            level: level.to_string(),
+            message,
+        };
 
     }
 
