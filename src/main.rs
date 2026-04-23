@@ -45,6 +45,28 @@ fn main() -> anyhow::Result<()> {
             message,
         };
 
+        let mut matches = true;
+
+        //level filter
+        if let Some (ref level) = args.level {
+            if entry.level != *level {
+                matches=false;
+            }
+        }
+
+        //keyword filter
+        if let Some (ref keyword) = args.keyword {
+            if !entry.message.contains (keyword) {
+                matches=false;
+            }
+        }
+
+        //final decision
+        if matches {
+            println!("{}", entry.message);
+            count += 1;
+        }
+
     }
 
     println!("Total matches: {}", count);
