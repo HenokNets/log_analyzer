@@ -4,13 +4,13 @@ use std::io::{BufRead, BufReader};
 
 #[derive(Parser)]
 struct Args {
-    #[arg(long)]
+    #[arg(long, help = "Path to the log file")]
     path: String,
 
-    #[arg(long)]
+    #[arg(long, help = "Filter by log level (e.g., ERROR, INFO)")]
     level: Option<String>,
 
-    #[arg(long)]
+    #[arg(long, help = "Filter logs containing this keyword")]
     keyword: Option<String>,
 }
 
@@ -30,20 +30,21 @@ fn main() -> anyhow::Result<()> {
     for line in reader.lines() {
         let line = line?;
 
-        let parts: Vec<&str> = line.split_whitespace().collect();
+        fn parse_line(line: &str) -> Option<LogEntry> {
+            let parts: Vec<&str> = line.split_whitespace().collect();
 
-        if parts.len() < 3 {
-            continue;
+            if parts.len() < 3 {
+                return None;
+            }
+
+            let level = parts[0];
+            let message = parts[2..].join(" ");
+
+            Some(LogEntry {
+                level: level.to_string(),
+                message,
+            })
         }
-
-        let level = parts[0];
-        let _timestamp = parts[1];
-        let message = parts[2..].join(" ");
-
-        let entry = LogEntry {
-            level: level.to_string(),
-            message,
-        };
 
         let mut matches = true;
 
