@@ -46,28 +46,25 @@ fn main() -> anyhow::Result<()> {
             })
         }
 
-        let mut matches = true;
+        fn matches_filters(entry: &LogEntry, args: &Args) -> bool {
+            let mut matches = true;
 
-        //level filter
-        if let Some (ref level) = args.level {
-            if entry.level != *level {
-                matches=false;
+            //level filter
+            if let Some(ref level) = args.level {
+                if entry.level != *level {
+                    matches = false;
+                }
             }
-        }
 
-        //keyword filter
-        if let Some (ref keyword) = args.keyword {
-            if !entry.message.contains (keyword) {
-                matches=false;
+            //keyword filter
+            if let Some(ref keyword) = args.keyword {
+                if !entry.message.contains(keyword) {
+                    matches = false;
+                }
             }
-        }
 
-        //final decision
-        if matches {
-            println!("{}", entry.message);
-            count += 1;
-        }
-
+            matches
+}
     }
 
     println!("Total matches: {}", count);
